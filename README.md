@@ -163,7 +163,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Your Name - [@yourusername](https://twitter.com/yourusername)
 
-Project Link: [https://github.com/yourusername/echo](https://github.com/yourusername/echo)
+Project Link: [https://github.com/BhagyaAmarasinghe/echo](https://github.com/BhagyaAmarasinghe/echo)
 
 ---
 <div align="center">

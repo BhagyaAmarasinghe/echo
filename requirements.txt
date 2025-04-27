@@ -7,5 +7,3 @@ pytest>=7.0.0
 black>=22.0.0
 isort>=5.10.0
 mypy>=0.931
-liquibase>=4.8.0
-PyYAML>=6.0

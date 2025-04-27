@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
+                      
+    <changeSet id="002" author="echo">
+        <comment>Add installation history tracking</comment>
+        
+        <!-- Installation history table -->
+        <createTable tableName="installation_history">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="package_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="success" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="details" type="TEXT"/>
+        </createTable>
+        
+        <!-- Create index for faster queries by package name -->
+        <createIndex indexName="idx_installation_history_package"
+                    tableName="installation_history"
+                    unique="false">
+            <column name="package_name"/>
+        </createIndex>
+        
+        <!-- Create index for faster queries by timestamp -->
+        <createIndex indexName="idx_installation_history_timestamp"
+                    tableName="installation_history"
+                    unique="false">
+            <column name="timestamp"/>
+        </createIndex>
+        
+        <!-- Update database version -->
+        <insert tableName="database_version">
+            <column name="version" value="2"/>
+            <column name="applied_at" valueDate="CURRENT_TIMESTAMP"/>
+            <column name="description" value="Add installation history tracking"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

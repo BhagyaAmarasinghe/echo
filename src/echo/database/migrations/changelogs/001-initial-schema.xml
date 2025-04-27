@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
+                      
+    <changeSet id="001" author="echo">
+        <comment>Create initial schema for Echo database</comment>
+        
+        <!-- Packages table -->
+        <createTable tableName="packages">
+            <column name="name" type="TEXT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="version" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="installed_date" type="TIMESTAMP"/>
+            <column name="source" type="TEXT"/>
+            <column name="size" type="INTEGER"/>
+            <column name="metadata" type="TEXT"/>
+        </createTable>
+        
+        <!-- Package dependencies table -->
+        <createTable tableName="package_dependencies">
+            <column name="package_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dependency_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <addPrimaryKey tableName="package_dependencies" 
+                      columnNames="package_name, dependency_name" 
+                      constraintName="pk_package_dependencies"/>
+                      
+        <addForeignKeyConstraint constraintName="fk_package_dependencies_packages"
+                               baseTableName="package_dependencies"
+                               baseColumnNames="package_name"
+                               referencedTableName="packages"
+                               referencedColumnNames="name"/>
+        
+        <!-- Package tags table -->
+        <createTable tableName="package_tags">
+            <column name="package_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tag" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <addPrimaryKey tableName="package_tags" 
+                      columnNames="package_name, tag" 
+                      constraintName="pk_package_tags"/>
+                      
+        <addForeignKeyConstraint constraintName="fk_package_tags_packages"
+                               baseTableName="package_tags"
+                               baseColumnNames="package_name"
+                               referencedTableName="packages"
+                               referencedColumnNames="name"/>
+        
+        <!-- Usage patterns table -->
+        <createTable tableName="usage_patterns">
+            <column name="package_name" type="TEXT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="frequency" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_used" type="TIMESTAMP"/>
+            <column name="importance_score" type="REAL"/>
+            <column name="metadata" type="TEXT"/>
+        </createTable>
+        
+        <addForeignKeyConstraint constraintName="fk_usage_patterns_packages"
+                               baseTableName="usage_patterns"
+                               baseColumnNames="package_name"
+                               referencedTableName="packages"
+                               referencedColumnNames="name"/>
+        
+        <!-- Usage contexts table -->
+        <createTable tableName="usage_contexts">
+            <column name="package_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="context" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <addPrimaryKey tableName="usage_contexts" 
+                      columnNames="package_name, context" 
+                      constraintName="pk_usage_contexts"/>
+                      
+        <addForeignKeyConstraint constraintName="fk_usage_contexts_packages"
+                               baseTableName="usage_contexts"
+                               baseColumnNames="package_name"
+                               referencedTableName="packages"
+                               referencedColumnNames="name"/>
+        
+        <!-- Recommendations table -->
+        <createTable tableName="recommendations">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="package_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="score" type="REAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reason" type="TEXT"/>
+            <column name="category" type="TEXT"/>
+            <column name="timestamp" type="TIMESTAMP"/>
+            <column name="source" type="TEXT"/>
+            <column name="metadata" type="TEXT"/>
+        </createTable>
+        
+        <!-- Database version table for tracking schema versions -->
+        <createTable tableName="database_version">
+            <column name="version" type="INTEGER">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="applied_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+        </createTable>
+        
+        <insert tableName="database_version">
+            <column name="version" value="1"/>
+            <column name="applied_at" valueDate="CURRENT_TIMESTAMP"/>
+            <column name="description" value="Initial schema creation"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
